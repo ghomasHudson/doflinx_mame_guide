@@ -1,0 +1,471 @@
+{"0": {
+    "doc": "File Structure",
+    "title": "File Structure",
+    "content": "DOFLinx loads .MAME files when a MAME game starts. The main file is named after the ROM, for example: . MAME/galaga.MAME MAME/frogger.MAME MAME/robotron.MAME . ",
+    "url": "/docs/documentation/01-file-structure.html",
+    
+    "relUrl": "/docs/documentation/01-file-structure.html"
+  },"1": {
+    "doc": "File Structure",
+    "title": "Load Order",
+    "content": "For a game-specific file, DOFLinx loads these in order: . All_Pre.MAME &lt;rom&gt;.MAME All_Post.MAME . If no game-specific file exists, DOFLinx can load: . All_Pre.MAME Default.MAME All_Post.MAME . ",
+    "url": "/docs/documentation/01-file-structure.html#load-order",
+    
+    "relUrl": "/docs/documentation/01-file-structure.html#load-order"
+  },"2": {
+    "doc": "File Structure",
+    "title": "Redirect Files",
+    "content": "Clone ROMs commonly use another ROM’s file via USES=: . USES=galaga . This tells DOFLinx to process galaga.MAME instead of duplicating the same configuration. ",
+    "url": "/docs/documentation/01-file-structure.html#redirect-files",
+    
+    "relUrl": "/docs/documentation/01-file-structure.html#redirect-files"
+  },"3": {
+    "doc": "File Structure",
+    "title": "Sections",
+    "content": "Game files commonly contain these sections: . [STARTUP] [SHUTDOWN] [COMMANDS] [CLEAR COMMANDS] [SCORE] . ",
+    "url": "/docs/documentation/01-file-structure.html#sections",
+    
+    "relUrl": "/docs/documentation/01-file-structure.html#sections"
+  },"4": {
+    "doc": "File Structure",
+    "title": "[STARTUP]",
+    "content": "Runs when the game starts. It can contain many normal DOFLinx parameters, plus immediate setup actions. Example: . [STARTUP] BUTTON_COLOUR_CHANGE=BUT_EX,Dodger_Blue,BUT_P1,Orchid,BUT_P2,Pale_Green COLOUR_PALETTE=White,Red,Blue,Green # Used for random color requences KEY_TO_COMMAND=BUT_B1,fire FF_DOF=E63,-1 BUTTONS_LIT_ADDED=BUT_J1,BUT_B1,BUT_B9 BUTTONS_LIT_DELETED=BUT_P1,BUT_P2 . ",
+    "url": "/docs/documentation/01-file-structure.html#startup",
+    
+    "relUrl": "/docs/documentation/01-file-structure.html#startup"
+  },"5": {
+    "doc": "File Structure",
+    "title": "[SHUTDOWN]",
+    "content": "Runs when the game stops. Use it to undo game-specific button mappings and lighting changes. Example: . [SHUTDOWN] KEY_TO_COMMAND= BUTTONS_LIT_ADDED=BUT_P1,BUT_P2 BUTTONS_LIT_DELETED=BUT_J1,BUT_B1,BUT_B9 . ",
+    "url": "/docs/documentation/01-file-structure.html#shutdown",
+    
+    "relUrl": "/docs/documentation/01-file-structure.html#shutdown"
+  },"6": {
+    "doc": "File Structure",
+    "title": "[COMMANDS]",
+    "content": "Maps MAME output messages or DOFLinx key commands to actions. Example: . [COMMANDS] led0|ON|FF_Button BUT_P1,BA_ON,0,0 led0|OFF|FF_Button BUT_P1,BA_OFF,0,0 fire|ON|FF_DOF E212,-1|FF_DOF E213,-1 . ",
+    "url": "/docs/documentation/01-file-structure.html#commands",
+    
+    "relUrl": "/docs/documentation/01-file-structure.html#commands"
+  },"7": {
+    "doc": "File Structure",
+    "title": "[CLEAR COMMANDS]",
+    "content": "Removes commands that were loaded earlier, usually from All_Pre.MAME or another shared file. Example: . [CLEAR COMMANDS] led0 led1 . ",
+    "url": "/docs/documentation/01-file-structure.html#clear-commands",
+    
+    "relUrl": "/docs/documentation/01-file-structure.html#clear-commands"
+  },"8": {
+    "doc": "File Structure",
+    "title": "[SCORE]",
+    "content": "Defines memory reads, value parsers, and triggers based on score or other game state. Example: . [SCORE] S1=:maincpu|main|program|83f8|8 M1=,,24,1,NUMBER,REVERSE SC=50:160:FF_DOF E223,-1 . This is the most game-specific section and is covered in detail in the later files. ",
+    "url": "/docs/documentation/01-file-structure.html#score",
+    
+    "relUrl": "/docs/documentation/01-file-structure.html#score"
+  },"9": {
+    "doc": "Commands",
+    "title": "Commands And Actions",
+    "content": "The [COMMANDS] section maps a trigger name and state to one or more DOFLinx actions. Use it for immediate events such as button presses, MAME lamp or LED outputs, coin counters, and other simple on/off signals. ",
+    "url": "/docs/documentation/02-commands-and-actions.html#commands-and-actions",
+    
+    "relUrl": "/docs/documentation/02-commands-and-actions.html#commands-and-actions"
+  },"10": {
+    "doc": "Commands",
+    "title": "Command Format",
+    "content": "trigger|state|action1|action2|action3 . Each command line is split with pipe characters (|): . | Field | Meaning | . | trigger | The MAME output name or DOFLinx command name to listen for. | . | state | The value/state that must be received before the actions run. | . | action1, action2, … | One or more DOFLinx actions to run, in order, when the trigger and state match. | . The trigger and state are the matching part. The actions are the effect part. If the trigger changes to a different state, that line is skipped and another matching line can handle it. Example: . led0|ON|FF_Button BUT_P1,BA_ON,0,0|FF_DOF E51,1200 led0|OFF|FF_Button BUT_P1,BA_OFF,0,0 . In this example, led0|ON turns on the player 1 button light and pulses DOF event E51 for 1200 ms. led0|OFF turns the player 1 button light back off. ",
+    "url": "/docs/documentation/02-commands-and-actions.html#command-format",
+    
+    "relUrl": "/docs/documentation/02-commands-and-actions.html#command-format"
+  },"11": {
+    "doc": "Commands",
+    "title": "Trigger Names",
+    "content": "Trigger names in [COMMANDS] can come from MAME output messages, DOFLinx key mappings, or named events. MAME output triggers are the names emitted by the running game. They are often outputs that originally controlled cabinet lamps, start buttons, counters, or status LEDs. If the game reports led0 changing to ON, DOFLinx looks for a command line that starts with led0|ON|. Common MAME output triggers: . led0 led1 coin player1 player2 pause reset cheat cheat_status . Many games don’t have triggers to easily hook into. For them you’ll need Memory Mapping. Custom trigger names are also useful with KEY_TO_COMMAND. This lets a cabinet button behave like a named trigger even when the game does not expose a matching MAME output. Example: . [STARTUP] KEY_TO_COMMAND=BUT_B1,fire [COMMANDS] fire|ON|FF_DOF E216,-1 . Here, pressing BUT_B1 creates the fire command. The [COMMANDS] line then maps fire|ON to DOF event E216. Releasing the button would be fire|OFF if you need a separate off action. ",
+    "url": "/docs/documentation/02-commands-and-actions.html#trigger-names",
+    
+    "relUrl": "/docs/documentation/02-commands-and-actions.html#trigger-names"
+  },"12": {
+    "doc": "Commands",
+    "title": "Multiple Actions",
+    "content": "Separate actions with |: . fire|ON|FF_DOF E216,-1|FF_DOF E217,-1|FF_PC,U,E,animation/overlay/mameoutput/generic_explosion1 . Actions run from left to right. This is useful when one event should produce several effects at the same time, such as a solenoid pulse, a flasher, and a PinUP Player overlay. Keep the trigger and state only once at the start of the line. Every field after that is an action. ",
+    "url": "/docs/documentation/02-commands-and-actions.html#multiple-actions",
+    
+    "relUrl": "/docs/documentation/02-commands-and-actions.html#multiple-actions"
+  },"13": {
+    "doc": "Commands",
+    "title": "Common Action Types",
+    "content": "| Action | Typical Use | . | FF_DOF | Fire a DOF event, such as a contactor, shaker, knocker, beacon, or custom DOF output. | . | FF_Button | Change a cabinet button light state. | . | FF_Colour | Set a named RGB device or toy to a colour for a duration. | . | FF_Flasher | Run a flasher effect on a configured device. | . | FF_Dev | Send a command to a specific configured output device. | . | FF_PC | Trigger PinUP Player content, commonly overlays or videos. | . | FF_DMD | Show media or content on a DMD/display target. | . | FF_MSG | Send a text message through DOFLinx. | . | FF_SSF | Play an SSF sound effect. | . | FF_RUN | Run an external command or program. | . The action name is followed by a space and then that action’s parameters. Parameters are comma-separated. For example, FF_DOF E223,-1 means action FF_DOF with parameters E223 and -1. For many DOF actions, the second parameter is a duration in milliseconds. A value of -1 commonly means the normal/default DOF pulse behavior for that event, while 0 is commonly used to turn an event off. Examples: . FF_DOF E223,-1 FF_Button BUT_P1,BA_ON,0,0 FF_Colour Blue,RGB_TT,1500 FF_Flasher DV_FLCN,FL_TT,1,300,100,Random FF_PC,U,E,animation/overlay/mameoutput/generic_explosion1 FF_DMD,U,display/picture?path=ingame/explosion1 . What those examples do: . | Example | Effect | . | FF_DOF E223,-1 | Fires DOF event E223 using its default behavior. | . | FF_Button BUT_P1,BA_ON,0,0 | Turns the player 1 button light on. | . | FF_Colour Blue,RGB_TT,1500 | Sets the RGB_TT device to blue for 1500 ms. | . | FF_Flasher DV_FLCN,FL_TT,1,300,100,Random | Runs a flasher effect using the configured flasher device and timing values. | . | FF_PC,U,E,animation/overlay/mameoutput/generic_explosion1 | Plan an explosion on a pixelcade LED | . | FF_DMD,U,display/picture?path=ingame/explosion1 | Displays the named picture content on the DMD/display target. | . ",
+    "url": "/docs/documentation/02-commands-and-actions.html#common-action-types",
+    
+    "relUrl": "/docs/documentation/02-commands-and-actions.html#common-action-types"
+  },"14": {
+    "doc": "Commands",
+    "title": "Choosing Commands Or Score Triggers",
+    "content": "Use [COMMANDS] when the game or cabinet already gives you a discrete event, such as led0 turning on or a mapped button being pressed. Use [SCORE] triggers when you need to watch memory values, such as score increases, lives changing, credits changing, boss health, or game mode values. See Score And Value Triggers. ",
+    "url": "/docs/documentation/02-commands-and-actions.html#choosing-commands-or-score-triggers",
+    
+    "relUrl": "/docs/documentation/02-commands-and-actions.html#choosing-commands-or-score-triggers"
+  },"15": {
+    "doc": "Commands",
+    "title": "Command Cleanup",
+    "content": "If a shared file defines commands you do not want for a specific game, use [CLEAR COMMANDS]: . [CLEAR COMMANDS] led0 led1 . This removes earlier command mappings for led0 and led1 before the current game file adds its own behavior. It is most useful when a shared file has generic mappings that are wrong for one specific game. ",
+    "url": "/docs/documentation/02-commands-and-actions.html#command-cleanup",
+    
+    "relUrl": "/docs/documentation/02-commands-and-actions.html#command-cleanup"
+  },"16": {
+    "doc": "Commands",
+    "title": "Commands",
+    "content": " ",
+    "url": "/docs/documentation/02-commands-and-actions.html",
+    
+    "relUrl": "/docs/documentation/02-commands-and-actions.html"
+  },"17": {
+    "doc": "Memory Mapping",
+    "title": "Memory Mapping",
+    "content": "The [SCORE] section lets DOFLinx poll MAME memory through the DOFLinx MAME Lua plugin. Despite the section name, these mappings are not limited to scores; they also cover credits, player state, lives, rounds, hits, shots, targets, and custom values. The plugin reads memory from MAME using fields supplied by DOFLinx: . device | tag | address space | address | length . Example: . S1=:maincpu|main|program|83f8|8 . This reads 8 bytes from: . device: :maincpu tag/group: main address space: program address: 0x83f8 length: 8 . This can then be parsed and used to trigger in-game effects. Memory mapping uses two lines for each tracked value: . | A memory read key tells DOFLinx where to read bytes from MAME memory. | A parser key tells DOFLinx how to turn those raw bytes into a usable value. | . The memory read line defines an address in memory for DOFLinx to read: . DK=:maincpu|main|program|99B5|1 . This reads 1 byte from 0x99B5, but the byte still needs to be interpreted. That is what the paired parser line does. DKM=,,,1,NUMBER,FORWARD,CREDITS . Together, DK and DKM mean: read the raw credit byte from MAME memory, parse it as a number, read it in forward order, and label the resulting value as credits. Many of the keys have predefined meanings within DOFLinx (e.g. for scores, credits, lives, etc). Memory read keys are paired with parser keys by name. For example, DK pairs with DKM, S1 pairs with M1, and L1 pairs with LM1. | Read Key | Parser Key | Purpose | . | CK | CKM | Game-active/check value | . | DK | DKM | Credits | . | PK | PKM | Player/current state | . | S1 | *M1 | Player 1 score | . | S2 | *M2 | Player 2 score | . | L1 | LM1 | Player 1 lives/ships | . | L2 | LM2 | Player 2 lives/ships | . | R1 | RM1 | Player 1 round/stage/level | . | R2 | RM2 | Player 2 round/stage/level | . | H1 | HM1 | Player 1 hits | . | H2 | HM2 | Player 2 hits | . | T1 | TM1 | Player 1 shots/targets | . | T2 | TM2 | Player 2 shots/targets | . | A1, A2, etc. | AM1, AM2, etc. | Custom arbitrary values | . ",
+    "url": "/docs/documentation/03-score-memory-mapping.html",
+    
+    "relUrl": "/docs/documentation/03-score-memory-mapping.html"
+  },"18": {
+    "doc": "Memory Mapping",
+    "title": "Parser Rule Format",
+    "content": "A parser is needed because arcade games do not all store values in the same format. One game may store credits as a simple byte, another may store score digits across several bytes, and another may store values in reverse order or as hex-coded digits. The parser tells DOFLinx how to normalize the raw memory bytes into the value that triggers can use. Without the parser, DOFLinx may be reading the correct address but still display or compare the wrong value. Parser rules are comma-separated. The exact fields vary by parser type, but use this form: . M1=filler,unknown,offset,multiplier,type,direction,label,operator,operator_arg . Examples: . M1=,,24,1,NUMBER,REVERSE LM1=,,,+1,HEX,REVERSE,SHIPS HM1=,,,1,HEX,REVERSE,Hits,,50 TM1=,,,1,STRING,FORWARD,Shots,ADD3COMP,2 . Parser Types . | Field Value | Meaning | . | NUMBER | Convert memory bytes as numeric digits | . | HEX | Convert as hex-coded value | . | STRING | Convert as string-like score bytes | . | ASCII | ASCII conversion mode | . | FORWARD | Read in forward order | . | REVERSE | Read in reverse order | . | REVERSE4 | Reverse in 4-byte groups | . | EDREVERSE4 | Extended/double reverse 4-byte mode | . | 2NDEVEN | Use second/even bytes | . | 2NDODD | Use second/odd bytes | . | NUMHEX-1 | Numeric hex minus one mode | . | ADD3COMP | Add/compact value operator used by some shots/hits counters | . Finding the right one may take some trial and error. ",
+    "url": "/docs/documentation/03-score-memory-mapping.html#parser-rule-format",
+    
+    "relUrl": "/docs/documentation/03-score-memory-mapping.html#parser-rule-format"
+  },"19": {
+    "doc": "Memory Mapping",
+    "title": "Check Keys",
+    "content": "When a game is first booted, lots of values are overwritten while the game memory is initialised. We need some way of preventing things being triggered until the values have settled. CK and CKM are used to gate this processing. Example: . CK=:maincpu|main|program|98F2|1 # Defines the value to monitor CKM=EQ,01 # Process scores when this value=01 . This says score processing only should proceed when memory at 0x98F2 equals 0x01. You can also use NEQ to wait till a value is not equal to something (e.g. wait till a memory location is no longer 0). ",
+    "url": "/docs/documentation/03-score-memory-mapping.html#check-keys",
+    
+    "relUrl": "/docs/documentation/03-score-memory-mapping.html#check-keys"
+  },"20": {
+    "doc": "Memory Mapping",
+    "title": "FBNeo Translation",
+    "content": "There are sometimes memory differences between MAME and FBneo. We can define an offset translation for FBNeo-style address differences: . MAME_FBNEO_OFFSET=1,0,EFFF,E000 . or: . MAME_FBNEO_OFFSET=1,0,8FFF,8000,9800,9FFF,8800 . Use existing files for the target game or driver family as a guide. ",
+    "url": "/docs/documentation/03-score-memory-mapping.html#fbneo-translation",
+    
+    "relUrl": "/docs/documentation/03-score-memory-mapping.html#fbneo-translation"
+  },"21": {
+    "doc": "Triggers",
+    "title": "Triggers",
+    "content": "Score/value triggers live in the [SCORE] section and run actions when monitored values change, reach thresholds, or remain idle. ",
+    "url": "/docs/documentation/04-score-and-value-triggers.html",
+    
+    "relUrl": "/docs/documentation/04-score-and-value-triggers.html"
+  },"22": {
+    "doc": "Triggers",
+    "title": "Trigger Families",
+    "content": "Most value triggers follow the same three suffixes: . | Suffix | Format | Meaning | . | *C | *C=min:max:actions | Runs when the value changes by an amount between min and max. | . | *T | *T=threshold:actions | Runs when the value reaches threshold. | . | *E | *E=min:max:step:actions | Runs for a matching event range, with step controlling repeated events. | . The first letter identifies the value being watched. For example, S is score, D is credits, H is hits, R is round, T is shots or targets, and A is a custom A-series value. Examples: . # Score changed by 50 to 160 points SC=50:160:FF_DOF E223,-1 # Score reached 30000 ST=30000:FF_DOF E773,1800 # Repeating score event SE=80000:80000:10:FF_DOF E781,1800 # Credits changed by -2 to 1 DC=-2:1:FF_PC,U,M,ministats?label=!PREFIX_C!&amp;value=!CREDITS! . ",
+    "url": "/docs/documentation/04-score-and-value-triggers.html#trigger-families",
+    
+    "relUrl": "/docs/documentation/04-score-and-value-triggers.html#trigger-families"
+  },"23": {
+    "doc": "Triggers",
+    "title": "Trigger Summary",
+    "content": "| Trigger | Meaning | . | SC | Score changed in range. | . | ST | Score threshold reached. | . | SE | Score event with repeat step. | . | DC | Credits changed in range. | . | DT | Credits threshold reached. | . | DE | Credits event with repeat step. | . | HC | Hits changed in range. | . | HT | Hits threshold reached. | . | HE | Hits event with repeat step. | . | RC | Round changed in range. | . | RT | Round threshold reached. | . | RE | Round event with repeat step or delay. | . | TC | Shots/targets changed in range. | . | TT | Shots/targets threshold reached. | . | TE | Shots/targets event with repeat step. | . | AC | Custom A-series value changed in range. | . | AT | Custom A-series value threshold reached. | . | AE | Custom A-series value event with repeat step. | . | AV | Custom A-series value trigger. See 05 - Custom A-Series Values. | . ",
+    "url": "/docs/documentation/04-score-and-value-triggers.html#trigger-summary",
+    
+    "relUrl": "/docs/documentation/04-score-and-value-triggers.html#trigger-summary"
+  },"24": {
+    "doc": "Triggers",
+    "title": "Other Trigger Forms",
+    "content": "SD runs after score activity has been idle for the configured delay. SD=delay_ms:actions . Example: . SD=5000:FF_PC,U,E,arcade/stream/mame/!ROM!?nogif&amp;nomini&amp;nostrip&amp;event=InGame . ",
+    "url": "/docs/documentation/04-score-and-value-triggers.html#other-trigger-forms",
+    
+    "relUrl": "/docs/documentation/04-score-and-value-triggers.html#other-trigger-forms"
+  },"25": {
+    "doc": "Triggers",
+    "title": "Action Substitutions",
+    "content": "Actions can use live substitutions: . !ROM! !SHOTS! !HITS! !RATIO! !ROUND! !LIVES! !CREDITS! !PULSE_RES! !PREFIX_R! !PREFIX_L! !PREFIX_C! !LED_R! !LED_G! !LED_B! . Example: . SD=100:FF_PC,U,M,ministats?label=!PREFIX_R!&amp;value=!ROUND!&amp;shots=!SHOTS!&amp;hits=!HITS!&amp;ratio=!RATIO! . ",
+    "url": "/docs/documentation/04-score-and-value-triggers.html#action-substitutions",
+    
+    "relUrl": "/docs/documentation/04-score-and-value-triggers.html#action-substitutions"
+  },"26": {
+    "doc": "Custom A-Series Values",
+    "title": "Custom A-Series Values",
+    "content": "The A-series is for arbitrary custom memory values that do not fit the older fixed score/lives/round/hits/shots slots. DOFLinx supports: . A AM AC AT AE AV . In practice, use indexed keys: . A1=... AM1=... A2=... AM2=... DOFLinx extracts the number from the key, so A1 is parsed as A-series slot 1 and AM1 as the parser for slot 1. ",
+    "url": "/docs/documentation/05-custom-a-series-values.html",
+    
+    "relUrl": "/docs/documentation/05-custom-a-series-values.html"
+  },"27": {
+    "doc": "Custom A-Series Values",
+    "title": "Basic Pattern",
+    "content": "A1=:maincpu|main|program|ADDRESS|LENGTH AM1=,,,1,HEX,FORWARD,Label . Example: . A1=:maincpu|main|program|9820|1 AM1=,,,1,HEX,REVERSE,ShipState . This reads one byte at 0x9820, parses it as hex, and labels it ShipState. ",
+    "url": "/docs/documentation/05-custom-a-series-values.html#basic-pattern",
+    
+    "relUrl": "/docs/documentation/05-custom-a-series-values.html#basic-pattern"
+  },"28": {
+    "doc": "Custom A-Series Values",
+    "title": "Multiple Custom Values",
+    "content": "A1=:maincpu|main|program|E123|1 AM1=,,,1,HEX,FORWARD,Weapon A2=:maincpu|main|program|E140|1 AM2=,,,1,NUMBER,FORWARD,Enemies . ",
+    "url": "/docs/documentation/05-custom-a-series-values.html#multiple-custom-values",
+    
+    "relUrl": "/docs/documentation/05-custom-a-series-values.html#multiple-custom-values"
+  },"29": {
+    "doc": "Custom A-Series Values",
+    "title": "A-Series Triggers",
+    "content": "DOFLinx supports: . | Key | Use | . | AC | Custom value changed in range | . | AT | Custom value reached threshold | . | AE | Custom value event with repeat/step | . | AV | Custom value/direct value trigger | . The exact argument shapes are inferred from the parser family and should be tested with logging enabled. Recommended starting forms: . AC=index:min:max:actions AT=index:threshold:actions AE=index:min:max:step:actions AV=index:value:actions . Example: . # Monitor weapon byte A1=:maincpu|main|program|E123|1 AM1=,,,1,HEX,FORWARD,Weapon # Monitor enemy count A2=:maincpu|main|program|E140|1 AM2=,,,1,NUMBER,FORWARD,Enemies # Trigger when weapon value reaches 3 AT=1:3:FF_Flasher DV_FLCN,FL_TT,1,300,100,Blue|FF_DOF E223,300 # Trigger when enemy count changes by 1 through 5 AC=2:1:5:FF_DOF E514,500 . ",
+    "url": "/docs/documentation/05-custom-a-series-values.html#a-series-triggers",
+    
+    "relUrl": "/docs/documentation/05-custom-a-series-values.html#a-series-triggers"
+  },"30": {
+    "doc": "Custom A-Series Values",
+    "title": "When To Use A-Series",
+    "content": "Use A-series for game-specific state such as: . weapon selected enemy count boss health bonus mode active current room power-up state timer value mission objective . Use the older fixed keys when the value already has a known role: . | Goal | Prefer | . | Score | S1/M1, S2/M2 | . | Lives | L1/LM1, L2/LM2 | . | Round/stage | R1/RM1, R2/RM2 | . | Hits | H1/HM1, H2/HM2 | . | Shots | T1/TM1, T2/TM2 | . | Credits | DK/DKM and DC | . | Anything else | A#/AM# and AC/AT/AE/AV | . ",
+    "url": "/docs/documentation/05-custom-a-series-values.html#when-to-use-a-series",
+    
+    "relUrl": "/docs/documentation/05-custom-a-series-values.html#when-to-use-a-series"
+  },"31": {
+    "doc": "Custom A-Series Values",
+    "title": "Finding Addresses",
+    "content": "Use MAME debugger, Lua console, cheat search tools, or RAM watches to find stable addresses. Then validate in small steps: . | Add one A# read. | Add one AM# parser. | Add one simple AT or AC action. | Enable DOFLinx logging. | Confirm the value changes when expected. | . ",
+    "url": "/docs/documentation/05-custom-a-series-values.html#finding-addresses",
+    
+    "relUrl": "/docs/documentation/05-custom-a-series-values.html#finding-addresses"
+  },"32": {
+    "doc": "Encoded Lines",
+    "title": "Encoded Lines",
+    "content": "Many shipped .MAME files contain lines beginning with: . FE= FD= FC= . These are obfuscated plaintext lines. They are not required. DOFLinx decodes them, then processes the resulting line normally. This encoded line: . FE=054140584A464C4B213741373C585C65 . decodes to: . FF_ROM=DOFLinx . This encoded line: . FE=03404D4C27336B6C587161545B5F6C526D715A6D69595A5B712D2B38236C20 . decodes to: . CK=:maincpu|main|program|98F2|1 . ",
+    "url": "/docs/documentation/06-encoded-lines.html",
+    
+    "relUrl": "/docs/documentation/06-encoded-lines.html"
+  },"33": {
+    "doc": "Encoded Lines",
+    "title": "Plaintext Is Allowed",
+    "content": "You can write the decoded lines directly: . CK=:maincpu|main|program|98F2|1 CKM=EQ,01 S1=:maincpu|main|program|83f8|8 M1=,,24,1,NUMBER,REVERSE . This is usually easier to maintain than encoded lines. ",
+    "url": "/docs/documentation/06-encoded-lines.html#plaintext-is-allowed",
+    
+    "relUrl": "/docs/documentation/06-encoded-lines.html#plaintext-is-allowed"
+  },"34": {
+    "doc": "Encoded Lines",
+    "title": "Tool",
+    "content": "I’ve created a tool doflinx_mame_encoder.py which you can use to work with encoded MAME files: . Decode a file: . python3 doflinx_mame_encoder.py decode MAME/galaga.MAME galaga.decoded.MAME . Encode a file: . python3 doflinx_mame_encoder.py encode galaga.decoded.MAME galaga.encoded.MAME . Encode using a specific kind and seed: . python3 doflinx_mame_encoder.py encode galaga.decoded.MAME galaga.encoded.MAME --kind FE --seed 0x03 . ",
+    "url": "/docs/documentation/06-encoded-lines.html#tool",
+    
+    "relUrl": "/docs/documentation/06-encoded-lines.html#tool"
+  },"35": {
+    "doc": "Encoded Lines",
+    "title": "Decoder Algorithm",
+    "content": "The first byte after FE=, FD=, or FC= is a seed. Every following byte is transformed into one character. Simplified Python decoder: . def decode_f_line(line): kind = line[:2] hex_data = line[3:] seed = int(hex_data[:2], 16) out = [] for i, pos in enumerate(range(2, len(hex_data), 2)): value = int(hex_data[pos:pos + 2], 16) if kind == \"FE\": char_code = value + seed + (i % 15) elif kind == \"FD\": char_code = value - seed - (i % 15) elif kind == \"FC\": char_code = value - seed + (i % 15) out.append(chr(char_code)) decoded = \"\".join(out) replacements = { \"QQ-\": \"K=\", \"VV-\": \"M=\", \"FF-\": \"1=\", \"JJ-\": \"2=\", \"ZZ+\": \"0\", \"YY+\": \"1\", \"XX+\": \"2\", \"WW+\": \"3\", \"AA+\": \"4\", \":sub\": \":maincpu\", \"cpu_space\": \"program\", } for old, new in replacements.items(): decoded = decoded.replace(old, new) return decoded . ",
+    "url": "/docs/documentation/06-encoded-lines.html#decoder-algorithm",
+    
+    "relUrl": "/docs/documentation/06-encoded-lines.html#decoder-algorithm"
+  },"36": {
+    "doc": "Worked Examples",
+    "title": "Worked Examples",
+    "content": " ",
+    "url": "/docs/documentation/07-worked-examples.html",
+    
+    "relUrl": "/docs/documentation/07-worked-examples.html"
+  },"37": {
+    "doc": "Worked Examples",
+    "title": "Galaga Score Mapping",
+    "content": "Decoded from MAME/galaga.MAME: . [SCORE] CK=:maincpu|main|program|98F2|1 CKM=EQ,01 DK=:maincpu|main|program|99B5|1 DKM=,,,1,NUMBER,FORWARD,CREDITS PK=:maincpu|main|program|9840|1 PKM=,,,1,HEX,FORWARD S1=:maincpu|main|program|83f8|8 M1=,,24,1,NUMBER,REVERSE S2=:maincpu|main|program|83e3|8 M2=,,24,1,NUMBER,REVERSE L1=:maincpu|main|program|9820|1 LM1=,,,+1,HEX,REVERSE,SHIPS R1=:maincpu|main|program|9821|1 RM1=,,,1,HEX,REVERSE,STAGE H1=:maincpu|main|program|9844|2 HM1=,,,1,HEX,REVERSE,Hits,,50 T1=:maincpu|main|program|9846|2 TM1=,,,1,HEX,REVERSE,Shots,,100 DELAY=5000 . Triggers: . # A single ship stationary or in flight SC=50:160:FF_DOF E223,-1 # Boss Ship in flight SC=400:400:FF_DOF E514,800|FF_DOF E518,800 # Challenge Stage Perfect SC=10000:10000:FF_Dev DV_KN,-1|FF_DOF E786,1500 # First New Ship ST=30000:FF_Dev DV_MC,-1|FF_DOF E773,1800 # Subsequent New Ships SE=80000:80000:10:FF_Dev DV_MC,-1|FF_DOF E781,1800 . ",
+    "url": "/docs/documentation/07-worked-examples.html#galaga-score-mapping",
+    
+    "relUrl": "/docs/documentation/07-worked-examples.html#galaga-score-mapping"
+  },"38": {
+    "doc": "Worked Examples",
+    "title": "Frogger Lives And Score",
+    "content": "Decoded from MAME/frogger.MAME: . [SCORE] CK=:maincpu|main|program|83B3|1 CKM=EQ,01 DK=:maincpu|main|program|83E1|1 DKM=,,,1,NUMBER,FORWARD,CREDITS S1=:maincpu|main|program|83ED|2 M1=,,24,10,STRING,REVERSE S2=:maincpu|main|program|83EB|2 M2=,,24,10,STRING,REVERSE L1=:maincpu|main|program|83E6|1 LM1=,,,1,HEX,REVERSE,FROGS L2=:maincpu|main|program|83E5|1 LM2=,,,+1,HEX,REVERSE,FROGS . Triggers: . # A forward step SC=10:10:FF_DOF E462,200|FF_DOF E465,200 # Frog home SC=200:999:FF_DOF E505,1100|FF_DOF E507,1100 # End level SC=1000:3000:FF_DOF E695,1000 # Extra frog SC=20000:20000:FF_DOF E781,1800 . ",
+    "url": "/docs/documentation/07-worked-examples.html#frogger-lives-and-score",
+    
+    "relUrl": "/docs/documentation/07-worked-examples.html#frogger-lives-and-score"
+  },"39": {
+    "doc": "Worked Examples",
+    "title": "1942 Level, Hits, And Targets",
+    "content": "Decoded from MAME/1942.MAME: . [SCORE] DK=:maincpu|main|program|E010|2 DKM=,,,1,NUMBER,FORWARD S1=:maincpu|main|program|E048|8 M1=,,,1,NUMBER,FORWARD S2=:maincpu|main|program|E050|8 M2=,,,1,NUMBER,FORWARD L1=:maincpu|main|program|E101|1 LM1=,,,1,HEX,FORWARD,Planes R1=:maincpu|main|program|E105|1 RM1=,,,+1,HEX,FORWARD,Level T1=:maincpu|main|program|E15D|3 TM1=,,,1,HEX,REVERSE,Targets H1=:maincpu|main|program|E14D|3 HM1=,,,1,HEX,REVERSE,Hits . Triggers: . # Planes are 30, 50, 70, 100 and 200 SC=30:30:FF_DOF E225,-1 SC=50:50:FF_DOF E514,800|FF_DOF E518,800 SC=70:70:FF_DOF E510,1000|FF_DOF E512,1000 SC=100:100:FF_DOF E725,1000 SC=200:200:FF_DOF E464,1400 # Bonus points SC=1000:1500:FF_DOF E574,2000 # Challenge stage bonus SC=20000:50000:FF_DOF E786,2500 . ",
+    "url": "/docs/documentation/07-worked-examples.html#1942-level-hits-and-targets",
+    
+    "relUrl": "/docs/documentation/07-worked-examples.html#1942-level-hits-and-targets"
+  },"40": {
+    "doc": "Worked Examples",
+    "title": "Custom A-Series Example",
+    "content": "This is a template for a custom value such as a weapon selector or boss health byte. [SCORE] # Game active check CK=:maincpu|main|program|98F2|1 CKM=EQ,01 # Custom value 1: weapon selected A1=:maincpu|main|program|E123|1 AM1=,,,1,HEX,FORWARD,Weapon # Custom value 2: enemy count A2=:maincpu|main|program|E140|1 AM2=,,,1,NUMBER,FORWARD,Enemies # Trigger when weapon reaches value 3 AT=1:3:FF_Flasher DV_FLCN,FL_TT,1,300,100,Blue|FF_DOF E223,300 # Trigger when enemy count changes by 1 through 5 AC=2:1:5:FF_DOF E514,500 . When building a new file, start with a known working game from the same hardware family, decode it if needed, then change one memory read at a time. ",
+    "url": "/docs/documentation/07-worked-examples.html#custom-a-series-example",
+    
+    "relUrl": "/docs/documentation/07-worked-examples.html#custom-a-series-example"
+  },"41": {
+    "doc": "Add A New Game",
+    "title": "Add A New Game",
+    "content": "This guide walks through creating a new .MAME file from scratch for a ROM that does not already have DOFLinx effects. ",
+    "url": "/docs/08-add-a-new-game.html",
+    
+    "relUrl": "/docs/08-add-a-new-game.html"
+  },"42": {
+    "doc": "Add A New Game",
+    "title": "1. Create The Game File",
+    "content": "Create a file named after the MAME ROM name: . MAME/&lt;rom&gt;.MAME . Examples: . MAME/galaga.MAME MAME/frogger.MAME MAME/robotron.MAME . Use the exact ROM name that MAME launches. Clone ROMs can either have their own file or redirect to a parent file with USES=. USES=galaga . ",
+    "url": "/docs/08-add-a-new-game.html#1-create-the-game-file",
+    
+    "relUrl": "/docs/08-add-a-new-game.html#1-create-the-game-file"
+  },"43": {
+    "doc": "Add A New Game",
+    "title": "2. Start With The Basic Sections",
+    "content": "A minimal game file usually starts with these sections: . [STARTUP] [SHUTDOWN] [COMMANDS] [SCORE] . [STARTUP] sets up game-specific lighting, button mappings, and long-running effects. [SHUTDOWN] should undo anything that should not carry into the next game. [STARTUP] BUTTONS_LIT_ADDED=BUT_J1,BUT_B1 KEY_TO_COMMAND=BUT_B1,fire [SHUTDOWN] KEY_TO_COMMAND= BUTTONS_LIT_DELETED=BUT_J1,BUT_B1 . ",
+    "url": "/docs/08-add-a-new-game.html#2-start-with-the-basic-sections",
+    
+    "relUrl": "/docs/08-add-a-new-game.html#2-start-with-the-basic-sections"
+  },"44": {
+    "doc": "Add A New Game",
+    "title": "3. Add Output Commands",
+    "content": "If the game exposes MAME outputs such as lamps, LEDs, or coin counters, map them in [COMMANDS]. [COMMANDS] led0|ON|FF_Button BUT_P1,BA_ON,0,0 led0|OFF|FF_Button BUT_P1,BA_OFF,0,0 fire|ON|FF_DOF E212,-1 fire|OFF|FF_DOF E212,0 . Use KEY_TO_COMMAND in [STARTUP] when you want a cabinet button to trigger a named command such as fire. ",
+    "url": "/docs/08-add-a-new-game.html#3-add-output-commands",
+    
+    "relUrl": "/docs/08-add-a-new-game.html#3-add-output-commands"
+  },"45": {
+    "doc": "Add A New Game",
+    "title": "4. Find Memory Values",
+    "content": "Use the [SCORE] section for memory-backed values. Despite the name, this can include scores, credits, lives, rounds, hits, shots, player state, and custom values. Launch MAME with the debugger enabled: . mame 1941 -debug . Replace 1941 with the ROM you are working on. The game starts with the debugger window open, which lets you inspect memory while the game is running. Use debugger cheat searches to identify values that change during gameplay. The cheat search works by saving memory values, then filtering candidate locations as those values change. For credits, start the game, open the debugger, and initialize an unsigned 8-bit search: . cheatinit ub . ub means unsigned byte, which is a good first search type for small counters such as credits. If the game already has 0 credits, insert one credit, break back into the debugger, and filter candidates to locations now equal to 1: . cheatnext equal,1 . Insert another credit and filter the remaining candidates to locations now equal to 2: . cheatnext equal,2 . Repeat with each visible credit change: . cheatnext equal,3 cheatnext equal,4 . When only a few matches remain, list them: . cheatlist . If you filter out the correct address by mistake, undo the last filter: . cheatundo . The main cheat debugger commands are: . | Command | Purpose | . | cheatinit | Initialize the cheat search over writable RAM. | . | cheatrange | Add a selected memory range to the current cheat search. | . | cheatnext | Filter candidates by comparing against the previous values. | . | cheatnextf | Filter candidates by comparing against the initial values. | . | cheatlist | Show current matches or save them to a file. | . | cheatundo | Undo the most recent cheat search filter. | . See the MAME cheat debugger reference for the full syntax: MAME Cheat Debugger Commands. Once you identify a candidate address, test it by adding a read line in DOFLinx. The address, device, tag, address space, and length become the memory read fields: . DK=:maincpu|main|program|99B5|1 . If the value changes correctly in DOFLinx when the game value changes, keep the mapping. If it is noisy or only works on some screens, keep searching for a more stable location. Start with one value at a time. A score mapping has a memory read key and a parser key: . [SCORE] S1=:maincpu|main|program|83f8|8 M1=,,24,1,NUMBER,REVERSE . For non-score values, use the matching key pair: . DK=:maincpu|main|program|99B5|1 DKM=,,,1,NUMBER,FORWARD,CREDITS L1=:maincpu|main|program|9820|1 LM1=,,,+1,HEX,REVERSE,SHIPS A1=:maincpu|main|program|9000|1 AM1=,,,1,HEX,FORWARD,MODE . See Memory Mapping for the read key and parser formats. ",
+    "url": "/docs/08-add-a-new-game.html#4-find-memory-values",
+    
+    "relUrl": "/docs/08-add-a-new-game.html#4-find-memory-values"
+  },"46": {
+    "doc": "Add A New Game",
+    "title": "5. Add Triggers",
+    "content": "After a value is being read correctly, add triggers for gameplay events. # Small score increase SC=50:160:FF_DOF E223,-1 # Extra life at 30000 ST=30000:FF_DOF E773,1800 # Credit added DC=1:1:FF_DOF E700,500 # Player 1 lives changed LC1=-1:-1:FF_DOF E701,700 . Start with simple effects and narrow ranges. Once the trigger fires at the right time, add more actions. See Score And Value Triggers for the available trigger types. ",
+    "url": "/docs/08-add-a-new-game.html#5-add-triggers",
+    
+    "relUrl": "/docs/08-add-a-new-game.html#5-add-triggers"
+  },"47": {
+    "doc": "Add A New Game",
+    "title": "6. Test In Small Steps",
+    "content": "Build the file incrementally: . | Confirm the game-specific .MAME file loads. | Add one [STARTUP] effect and confirm it appears. | Add one [COMMANDS] mapping and confirm the output or button command fires. | Add one memory read and parser pair. | Add one trigger for that value. | Repeat for the next value. | . If an effect does not fire, simplify the file until only the relevant command, read, parser, and trigger remain. ",
+    "url": "/docs/08-add-a-new-game.html#6-test-in-small-steps",
+    
+    "relUrl": "/docs/08-add-a-new-game.html#6-test-in-small-steps"
+  },"48": {
+    "doc": "Add A New Game",
+    "title": "7. Clean Up The Finished File",
+    "content": "Before sharing or committing the file: . | Remove temporary test effects. | Keep comments only where they explain useful game behavior. | Move shared behavior into All_Pre.MAME or All_Post.MAME if it applies to multiple games. | Use USES= for clone ROMs that should share the same configuration. | Confirm [SHUTDOWN] resets any game-specific button mappings or lighting changes. | . ",
+    "url": "/docs/08-add-a-new-game.html#7-clean-up-the-finished-file",
+    
+    "relUrl": "/docs/08-add-a-new-game.html#7-clean-up-the-finished-file"
+  },"49": {
+    "doc": "API Reference",
+    "title": "API Reference",
+    "content": "This is a lookup reference for DOFLinx .MAME files. Use it alongside the task-based documentation when you know which section, key, trigger, parser, or action you need. ",
+    "url": "/docs/api-reference.html",
+    
+    "relUrl": "/docs/api-reference.html"
+  },"50": {
+    "doc": "API Reference",
+    "title": "File-Level Directives",
+    "content": "| Directive | Format | Purpose | . | USES | USES=&lt;rom&gt; | Process another ROM’s .MAME file instead of duplicating configuration. Commonly used by clone ROMs. | . | MAME_FBNEO_OFFSET | MAME_FBNEO_OFFSET=&lt;enabled&gt;,&lt;offset&gt;,&lt;from&gt;,&lt;to&gt;[,&lt;from&gt;,&lt;to&gt;,&lt;base&gt;] | Translate address ranges for FBNeo-style memory layout differences. | . ",
+    "url": "/docs/api-reference.html#file-level-directives",
+    
+    "relUrl": "/docs/api-reference.html#file-level-directives"
+  },"51": {
+    "doc": "API Reference",
+    "title": "Sections",
+    "content": "| Section | Purpose | Typical Contents | . | [STARTUP] | Runs when the game starts. | Button colours, lit-button changes, key mappings, startup effects. | . | [SHUTDOWN] | Runs when the game stops. | Cleanup for mappings, lights, and game-specific setup. | . | [COMMANDS] | Maps discrete MAME outputs or command names to actions. | trigger\\|state\\|action lines. | . | [CLEAR COMMANDS] | Removes command mappings loaded earlier. | One trigger name per line. | . | [SCORE] | Defines memory reads, parser rules, and value triggers. | S1, M1, CK, CKM, SC, ST, A1, AM1, etc. | . ",
+    "url": "/docs/api-reference.html#sections",
+    
+    "relUrl": "/docs/api-reference.html#sections"
+  },"52": {
+    "doc": "API Reference",
+    "title": "Startup And Shutdown Keys",
+    "content": "| Key | Format | Purpose | . | BUTTON_COLOUR_CHANGE | BUTTON_COLOUR_CHANGE=&lt;button&gt;,&lt;colour&gt;[,&lt;button&gt;,&lt;colour&gt;...] | Changes cabinet button colours for this game. | . | COLOUR_PALETTE | COLOUR_PALETTE=&lt;colour&gt;[,&lt;colour&gt;...] | Defines colours available to random colour effects. | . | KEY_TO_COMMAND | KEY_TO_COMMAND=&lt;button&gt;,&lt;command&gt; | Emits a named command when a cabinet button changes state. Use an empty value to clear mappings. | . | FF_DOF | FF_DOF=&lt;event&gt;,&lt;duration&gt; | Fires a DOF event immediately during startup or shutdown. | . | BUTTONS_LIT_ADDED | BUTTONS_LIT_ADDED=&lt;button&gt;[,&lt;button&gt;...] | Adds buttons to the lit-button set. | . | BUTTONS_LIT_DELETED | BUTTONS_LIT_DELETED=&lt;button&gt;[,&lt;button&gt;...] | Removes buttons from the lit-button set. | . ",
+    "url": "/docs/api-reference.html#startup-and-shutdown-keys",
+    
+    "relUrl": "/docs/api-reference.html#startup-and-shutdown-keys"
+  },"53": {
+    "doc": "API Reference",
+    "title": "Command Lines",
+    "content": "trigger|state|action1|action2|action3 . | Field | Meaning | . | trigger | MAME output name, DOFLinx command name, or custom event name. | . | state | Required state/value before actions run, such as ON or OFF. | . | action | One or more DOFLinx actions, evaluated left to right. | . Example: . led0|ON|FF_Button BUT_P1,BA_ON,0,0|FF_DOF E51,1200 led0|OFF|FF_Button BUT_P1,BA_OFF,0,0 . ",
+    "url": "/docs/api-reference.html#command-lines",
+    
+    "relUrl": "/docs/api-reference.html#command-lines"
+  },"54": {
+    "doc": "API Reference",
+    "title": "Common Command Triggers",
+    "content": "| Trigger | Typical Meaning | . | led0, led1 | MAME lamp or LED output. | . | coin | Coin counter/output. | . | player1, player2 | Player state or start output. | . | pause | Pause state. | . | reset | Reset state. | . | cheat, cheat_status | Cheat/debug-related output. | . | Custom name | A command emitted by KEY_TO_COMMAND, such as fire. | . ",
+    "url": "/docs/api-reference.html#common-command-triggers",
+    
+    "relUrl": "/docs/api-reference.html#common-command-triggers"
+  },"55": {
+    "doc": "API Reference",
+    "title": "Actions",
+    "content": "Actions use this shape: . ACTION_NAME parameter1,parameter2,parameter3 . | Action | Common Format | Purpose | . | FF_DOF | FF_DOF E223,-1 | Fires a DOF event. The second value is usually duration in milliseconds; -1 means default pulse behavior and 0 commonly turns an event off. | . | FF_Button | FF_Button BUT_P1,BA_ON,0,0 | Changes a cabinet button light state. | . | FF_Colour | FF_Colour Blue,RGB_TT,1500 | Sets a named RGB device/toy to a colour. | . | FF_Flasher | FF_Flasher DV_FLCN,FL_TT,1,300,100,Random | Runs a flasher effect on a configured device. | . | FF_Dev | FF_Dev DV_KN,-1 | Sends a command to a configured output device. | . | FF_PC | FF_PC,U,E,animation/overlay/mameoutput/generic_explosion1 | Triggers PinUP Player or Pixelcade content. | . | FF_DMD | FF_DMD,U,display/picture?path=ingame/explosion1 | Shows media on a DMD/display target. | . | FF_MSG | FF_MSG &lt;message&gt; | Sends a text message through DOFLinx. | . | FF_SSF | FF_SSF &lt;sound&gt; | Plays an SSF sound effect. | . | FF_RUN | FF_RUN &lt;command&gt; | Runs an external command or program. | . ",
+    "url": "/docs/api-reference.html#actions",
+    
+    "relUrl": "/docs/api-reference.html#actions"
+  },"56": {
+    "doc": "API Reference",
+    "title": "Memory Read Keys",
+    "content": "Memory reads use this shape: . KEY=device|tag|address_space|address|length . Example: . S1=:maincpu|main|program|83f8|8 . | Field | Example | Meaning | . | device | :maincpu | MAME device to read from. | . | tag | main | Device tag/group. | . | address_space | program | MAME address space. | . | address | 83f8 | Hex memory address. | . | length | 8 | Number of bytes to read. | . ",
+    "url": "/docs/api-reference.html#memory-read-keys",
+    
+    "relUrl": "/docs/api-reference.html#memory-read-keys"
+  },"57": {
+    "doc": "API Reference",
+    "title": "Read And Parser Key Pairs",
+    "content": "| Read Key | Parser Key | Purpose | . | CK | CKM | Game-active/check gate. | . | DK | DKM | Credits. | . | PK | PKM | Player/current state. | . | S1 | M1 | Player 1 score. | . | S2 | M2 | Player 2 score. | . | L1 | LM1 | Player 1 lives/ships. | . | L2 | LM2 | Player 2 lives/ships. | . | R1 | RM1 | Player 1 round/stage/level. | . | R2 | RM2 | Player 2 round/stage/level. | . | H1 | HM1 | Player 1 hits. | . | H2 | HM2 | Player 2 hits. | . | T1 | TM1 | Player 1 shots/targets. | . | T2 | TM2 | Player 2 shots/targets. | . | A1, A2, … | AM1, AM2, … | Custom arbitrary values. | . ",
+    "url": "/docs/api-reference.html#read-and-parser-key-pairs",
+    
+    "relUrl": "/docs/api-reference.html#read-and-parser-key-pairs"
+  },"58": {
+    "doc": "API Reference",
+    "title": "Check Gate",
+    "content": "The check gate prevents score/value processing until a memory value indicates the game is ready. CK=:maincpu|main|program|98F2|1 CKM=EQ,01 . | Check Parser | Meaning | . | CKM=EQ,&lt;value&gt; | Process values only when the check value equals &lt;value&gt;. | . | CKM=NEQ,&lt;value&gt; | Process values only when the check value does not equal &lt;value&gt;. | . ",
+    "url": "/docs/api-reference.html#check-gate",
+    
+    "relUrl": "/docs/api-reference.html#check-gate"
+  },"59": {
+    "doc": "API Reference",
+    "title": "Parser Rules",
+    "content": "Parser rules normalize raw memory bytes into values that triggers can compare. PARSER_KEY=filler,unknown,offset,multiplier,type,direction,label,operator,operator_arg . | Field | Example | Meaning | . | filler | empty | Usually unused. | . | unknown | empty | Usually unused. | . | offset | 24 | Optional offset/adjustment used by some value formats. | . | multiplier | 1, 10, +1 | Multiplies or adjusts the parsed value. | . | type | NUMBER, HEX, STRING, ASCII | Conversion mode for raw bytes. | . | direction | FORWARD, REVERSE | Byte read order. | . | label | SHIPS, CREDITS, Hits | Optional display/substitution label. | . | operator | ADD3COMP | Optional post-processing operator. | . | operator_arg | 50, 100, 2 | Optional argument for the operator or parser. | . Common parser values: . | Value | Meaning | . | NUMBER | Convert memory bytes as numeric digits. | . | HEX | Convert as a hex-coded value. | . | STRING | Convert as string-like score bytes. | . | ASCII | ASCII conversion mode. | . | FORWARD | Read in forward order. | . | REVERSE | Read in reverse order. | . | REVERSE4 | Reverse in 4-byte groups. | . | EDREVERSE4 | Extended/double reverse 4-byte mode. | . | 2NDEVEN | Use second/even bytes. | . | 2NDODD | Use second/odd bytes. | . | NUMHEX-1 | Numeric hex minus one mode. | . | ADD3COMP | Add/compact operator used by some counters. | . ",
+    "url": "/docs/api-reference.html#parser-rules",
+    
+    "relUrl": "/docs/api-reference.html#parser-rules"
+  },"60": {
+    "doc": "API Reference",
+    "title": "Trigger Families",
+    "content": "Most value triggers use one of these suffixes: . | Suffix | Format | Meaning | . | C | &lt;prefix&gt;C=min:max:actions | Runs when the value changes by an amount between min and max. | . | T | &lt;prefix&gt;T=threshold:actions | Runs when the value reaches threshold. | . | E | &lt;prefix&gt;E=min:max:step:actions | Runs for a matching event range, with step controlling repeated events. | . Examples: . SC=50:160:FF_DOF E223,-1 ST=30000:FF_DOF E773,1800 SE=80000:80000:10:FF_DOF E781,1800 . ",
+    "url": "/docs/api-reference.html#trigger-families",
+    
+    "relUrl": "/docs/api-reference.html#trigger-families"
+  },"61": {
+    "doc": "API Reference",
+    "title": "Trigger Keys",
+    "content": "| Trigger | Format | Meaning | . | SC | SC=min:max:actions | Score changed in range. | . | ST | ST=threshold:actions | Score threshold reached. | . | SE | SE=min:max:step:actions | Score event with repeat step. | . | SD | SD=delay_ms:actions | Runs after score activity has been idle for the configured delay. | . | DC | DC=min:max:actions | Credits changed in range. | . | DT | DT=threshold:actions | Credits threshold reached. | . | DE | DE=min:max:step:actions | Credits event with repeat step. | . | LC1, LC2 | LC#=min:max:actions | Player lives changed in range. | . | HC | HC=min:max:actions | Hits changed in range. | . | HT | HT=threshold:actions | Hits threshold reached. | . | HE | HE=min:max:step:actions | Hits event with repeat step. | . | RC | RC=min:max:actions | Round/stage changed in range. | . | RT | RT=threshold:actions | Round/stage threshold reached. | . | RE | RE=min:max:step:actions | Round/stage event with repeat step or delay. | . | TC | TC=min:max:actions | Shots/targets changed in range. | . | TT | TT=threshold:actions | Shots/targets threshold reached. | . | TE | TE=min:max:step:actions | Shots/targets event with repeat step. | . | AC | AC=index:min:max:actions | Custom A-series value changed in range. | . | AT | AT=index:threshold:actions | Custom A-series value threshold reached. | . | AE | AE=index:min:max:step:actions | Custom A-series value event with repeat step. | . | AV | AV=index:value:actions | Custom A-series direct value trigger. | . ",
+    "url": "/docs/api-reference.html#trigger-keys",
+    
+    "relUrl": "/docs/api-reference.html#trigger-keys"
+  },"62": {
+    "doc": "API Reference",
+    "title": "Substitutions",
+    "content": "Actions can include live value substitutions. | Token | Meaning | . | !ROM! | Current ROM name. | . | !SHOTS! | Current shots/targets value. | . | !HITS! | Current hits value. | . | !RATIO! | Hit/shot ratio. | . | !ROUND! | Current round/stage value. | . | !LIVES! | Current lives value. | . | !CREDITS! | Current credits value. | . | !PULSE_RES! | Pulse/result value. | . | !PREFIX_R! | Round label prefix. | . | !PREFIX_L! | Lives label prefix. | . | !PREFIX_C! | Credits label prefix. | . | !LED_R! | Current red LED value. | . | !LED_G! | Current green LED value. | . | !LED_B! | Current blue LED value. | . ",
+    "url": "/docs/api-reference.html#substitutions",
+    
+    "relUrl": "/docs/api-reference.html#substitutions"
+  },"63": {
+    "doc": "API Reference",
+    "title": "Encoded Lines",
+    "content": "| Prefix | Meaning | . | FE= | Encoded plaintext line decoded before processing. | . | FD= | Encoded plaintext line decoded before processing. | . | FC= | Encoded plaintext line decoded before processing. | . Plaintext lines are allowed and are usually easier to maintain. See Encoded Lines for the decoder algorithm and helper tool. ",
+    "url": "/docs/api-reference.html#encoded-lines",
+    
+    "relUrl": "/docs/api-reference.html#encoded-lines"
+  },"64": {
+    "doc": "Documentation",
+    "title": "Documentation",
+    "content": "Documentation for DOFLinx .MAME file structure, commands, memory mapping, triggers, custom values, encoded lines, and worked examples. ",
+    "url": "/docs/documentation.html",
+    
+    "relUrl": "/docs/documentation.html"
+  },"65": {
+    "doc": "Home",
+    "title": "DOFLinx MAME File Guide",
+    "content": "This site explains how to write and maintain DOFLinx .MAME files to enable in-game effects. Use the Documentation for task-based guidance and the API Reference for quick lookup tables. ",
+    "url": "/#doflinx-mame-file-guide",
+    
+    "relUrl": "/#doflinx-mame-file-guide"
+  },"66": {
+    "doc": "Home",
+    "title": "Home",
+    "content": " ",
+    "url": "/",
+    
+    "relUrl": "/"
+  }
+}

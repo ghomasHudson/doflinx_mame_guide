@@ -1,5 +1,7 @@
 ---
 title: Custom A-Series Values
+nav_order: 5
+parent: Documentation
 layout: default
 ---
 
@@ -7,7 +9,7 @@ layout: default
 
 The A-series is for arbitrary custom memory values that do not fit the older fixed score/lives/round/hits/shots slots.
 
-The parser supports:
+DOFLinx supports:
 
 ```text
 A
@@ -57,7 +59,7 @@ AM2=,,,1,NUMBER,FORWARD,Enemies
 
 ## A-Series Triggers
 
-The parser supports:
+DOFLinx supports:
 
 | Key | Use |
 |---|---|

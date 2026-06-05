@@ -1,5 +1,7 @@
 ---
 title: Worked Examples
+nav_order: 7
+parent: Documentation
 layout: default
 ---
 

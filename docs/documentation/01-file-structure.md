@@ -1,5 +1,7 @@
 ---
 title: File Structure
+nav_order: 1
+parent: Documentation
 layout: default
 ---
 
@@ -53,13 +55,6 @@ Game files commonly contain these sections:
 [SCORE]
 ```
 
-`All_Post.MAME` usually only uses command sections:
-
-```ini
-[COMMANDS]
-[CLEAR COMMANDS]
-```
-
 ## `[STARTUP]`
 
 Runs when the game starts. It can contain many normal DOFLinx parameters, plus immediate setup actions.
@@ -69,7 +64,7 @@ Example:
 ```ini
 [STARTUP]
 BUTTON_COLOUR_CHANGE=BUT_EX,Dodger_Blue,BUT_P1,Orchid,BUT_P2,Pale_Green
-COLOUR_PALETTE=White,Red,Blue,Green
+COLOUR_PALETTE=White,Red,Blue,Green         # Used for random color requences
 KEY_TO_COMMAND=BUT_B1,fire
 FF_DOF=E63,-1
 BUTTONS_LIT_ADDED=BUT_J1,BUT_B1,BUT_B9

@@ -1,5 +1,7 @@
 ---
 title: Encoded Lines
+nav_order: 6
+parent: Documentation
 layout: default
 ---
 
@@ -52,30 +54,26 @@ M1=,,24,1,NUMBER,REVERSE
 
 This is usually easier to maintain than encoded lines.
 
-## Codec Script
+## Tool
 
-This package includes a helper script created for this documentation:
-
-```text
-doflinx_mame_codec.py
-```
+I've created a tool [doflinx_mame_encoder.py](/assets/doflinx_mame_encoder.py) which you can use to work with encoded MAME files:
 
 Decode a file:
 
 ```bash
-python3 doflinx_mame_codec.py decode MAME/galaga.MAME galaga.decoded.MAME
+python3 doflinx_mame_encoder.py decode MAME/galaga.MAME galaga.decoded.MAME
 ```
 
 Encode a file:
 
 ```bash
-python3 doflinx_mame_codec.py encode galaga.decoded.MAME galaga.encoded.MAME
+python3 doflinx_mame_encoder.py encode galaga.decoded.MAME galaga.encoded.MAME
 ```
 
 Encode using a specific kind and seed:
 
 ```bash
-python3 doflinx_mame_codec.py encode galaga.decoded.MAME galaga.encoded.MAME --kind FE --seed 0x03
+python3 doflinx_mame_encoder.py encode galaga.decoded.MAME galaga.encoded.MAME --kind FE --seed 0x03
 ```
 
 ## Decoder Algorithm
@@ -124,7 +122,3 @@ def decode_f_line(line):
 
     return decoded
 ```
-
-## Why Keep Encoded Lines?
-
-There is no technical need to keep them encoded for normal use. Encoding may have been used to package or hide internal mappings. For maintainability, plaintext is better.
