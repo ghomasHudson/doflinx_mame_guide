@@ -1,0 +1,14 @@
+title: DOFLinx MAME File Guide
+description: Documentation for writing DOFLinx .MAME configuration files
+theme: jekyll-theme-minimal
+markdown: kramdown
+
+plugins:
+  - jekyll-relative-links
+
+relative_links:
+  enabled: true
+  collections: false
+
+include:
+  - README.md
