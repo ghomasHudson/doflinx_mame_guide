@@ -1,14 +1,8 @@
-title: DOFLinx MAME File Guide
-description: Documentation for writing DOFLinx .MAME configuration files
-theme: jekyll-theme-minimal
-markdown: kramdown
+title: Just the Docs Template
+description: A starter template for a Jeykll site using the Just the Docs theme!
+theme: just-the-docs
 
-plugins:
-  - jekyll-relative-links
+url: https://just-the-docs.github.io
 
-relative_links:
-  enabled: true
-  collections: false
-
-include:
-  - README.md
+aux_links:
+  Template Repository: https://github.com/just-the-docs/just-the-docs-template
