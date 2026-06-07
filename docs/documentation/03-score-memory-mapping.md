@@ -82,8 +82,10 @@ The parser tells DOFLinx how to normalize the raw memory bytes into the value th
 Parser rules are comma-separated. The exact fields vary by parser type, but use this form:
 
 ```ini
-M1=filler,unknown,offset,multiplier,type,direction,label,operator,operator_arg
+M1=start_byte,end_byte,filler,multiplier,type,direction,label,operator,max_change
 ```
+
+The field order is start byte, end byte, filler, multiplier/add/subtract, type, direction, label, operator, then maximum change. `max_change` limits how large a value change can be before the change is ignored.
 
 Examples:
 

@@ -22,7 +22,7 @@ This is a lookup reference for DOFLinx `.MAME` files. Use it alongside the task-
 | `[STARTUP]` | Runs when the game starts. | Button colours, lit-button changes, key mappings, startup effects. |
 | `[SHUTDOWN]` | Runs when the game stops. | Cleanup for mappings, lights, and game-specific setup. |
 | `[COMMANDS]` | Maps discrete MAME outputs or command names to actions. | `trigger\|state\|action` lines. |
-| `[CLEAR COMMANDS]` | Removes command mappings loaded earlier. | One trigger name per line. |
+| `[CLEAR COMMANDS]` | Removes command mappings loaded earlier, usually from `All_Pre.MAME` or another shared file. | One trigger name per line. |
 | `[SCORE]` | Defines memory reads, parser rules, and value triggers. | `S1`, `M1`, `CK`, `CKM`, `SC`, `ST`, `A1`, `AM1`, etc. |
 
 ## Startup And Shutdown Keys
@@ -82,7 +82,8 @@ ACTION_NAME parameter1,parameter2,parameter3
 | `FF_Colour` | `FF_Colour Blue,RGB_TT,1500` | Sets a named RGB device/toy to a colour. |
 | `FF_Flasher` | `FF_Flasher DV_FLCN,FL_TT,1,300,100,Random` | Runs a flasher effect on a configured device. |
 | `FF_Dev` | `FF_Dev DV_KN,-1` | Sends a command to a configured output device. |
-| `FF_PC` | `FF_PC,U,E,animation/overlay/mameoutput/generic_explosion1` | Triggers PinUP Player or Pixelcade content. |
+| `FF_PC` | `FF_PC,U,E,animation/overlay/mameoutput/generic_explosion1` | Triggers Pixelcade content. |
+| `FF_PUP` | `FF_PUP,U,E,animation/overlay/mameoutput/generic_explosion1` | Triggers PinUP Player content. |
 | `FF_DMD` | `FF_DMD,U,display/picture?path=ingame/explosion1` | Shows media on a DMD/display target. |
 | `FF_MSG` | `FF_MSG <message>` | Sends a text message through DOFLinx. |
 | `FF_SSF` | `FF_SSF <sound>` | Plays an SSF sound effect. |
@@ -145,23 +146,23 @@ CKM=EQ,01
 
 ## Parser Rules
 
-Parser rules normalize raw memory bytes into values that triggers can compare.
+Parser rules normalize raw memory bytes into values that triggers can compare. The full command formats are documented in the DOFLinx parameter reference: [FF_PC](https://doflinx.github.io/docs/parameters/11_The_Parameters.html#ff_pc-aoddddd) and [FF_PUP](https://doflinx.github.io/docs/parameters/11_The_Parameters.html#ff_pup-aoddddd).
 
 ```ini
-PARSER_KEY=filler,unknown,offset,multiplier,type,direction,label,operator,operator_arg
+PARSER_KEY=start_byte,end_byte,filler,multiplier,type,direction,label,operator,max_change
 ```
 
 | Field | Example | Meaning |
 |---|---|---|
-| `filler` | empty | Usually unused. |
-| `unknown` | empty | Usually unused. |
-| `offset` | `24` | Optional offset/adjustment used by some value formats. |
+| `start_byte` | empty, `0`, `24` | Optional start byte or offset used by some value formats. |
+| `end_byte` | empty | Optional end byte used by some value formats. |
+| `filler` | empty | Optional filler field. |
 | `multiplier` | `1`, `10`, `+1` | Multiplies or adjusts the parsed value. |
 | `type` | `NUMBER`, `HEX`, `STRING`, `ASCII` | Conversion mode for raw bytes. |
 | `direction` | `FORWARD`, `REVERSE` | Byte read order. |
 | `label` | `SHIPS`, `CREDITS`, `Hits` | Optional display/substitution label. |
 | `operator` | `ADD3COMP` | Optional post-processing operator. |
-| `operator_arg` | `50`, `100`, `2` | Optional argument for the operator or parser. |
+| `max_change` | `50`, `100`, `2` | Maximum change allowed for the change to be processed. |
 
 Common parser values:
 

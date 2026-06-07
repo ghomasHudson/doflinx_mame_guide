@@ -78,7 +78,7 @@ Separate actions with `|`:
 fire|ON|FF_DOF E216,-1|FF_DOF E217,-1|FF_PC,U,E,animation/overlay/mameoutput/generic_explosion1
 ```
 
-Actions run from left to right. This is useful when one event should produce several effects at the same time, such as a solenoid pulse, a flasher, and a PinUP Player overlay.
+Actions run from left to right. This is useful when one event should produce several effects at the same time, such as a solenoid pulse, a flasher, and a Pixelcade animation.
 
 Keep the trigger and state only once at the start of the line. Every field after that is an action.
 
@@ -91,7 +91,8 @@ Keep the trigger and state only once at the start of the line. Every field after
 | `FF_Colour` | Set a named RGB device or toy to a colour for a duration. |
 | `FF_Flasher` | Run a flasher effect on a configured device. |
 | `FF_Dev` | Send a command to a specific configured output device. |
-| `FF_PC` | Trigger PinUP Player content, commonly overlays or videos. |
+| `FF_PC` | Trigger Pixelcade content. |
+| `FF_PUP` | Trigger PinUP Player content, commonly overlays or videos. |
 | `FF_DMD` | Show media or content on a DMD/display target. |
 | `FF_MSG` | Send a text message through DOFLinx. |
 | `FF_SSF` | Play an SSF sound effect. |
@@ -109,6 +110,7 @@ FF_Button BUT_P1,BA_ON,0,0
 FF_Colour Blue,RGB_TT,1500
 FF_Flasher DV_FLCN,FL_TT,1,300,100,Random
 FF_PC,U,E,animation/overlay/mameoutput/generic_explosion1
+FF_PUP,U,E,animation/overlay/mameoutput/generic_explosion1
 FF_DMD,U,display/picture?path=ingame/explosion1
 ```
 
@@ -120,7 +122,8 @@ What those examples do:
 | `FF_Button BUT_P1,BA_ON,0,0` | Turns the player 1 button light on. |
 | `FF_Colour Blue,RGB_TT,1500` | Sets the `RGB_TT` device to blue for 1500 ms. |
 | `FF_Flasher DV_FLCN,FL_TT,1,300,100,Random` | Runs a flasher effect using the configured flasher device and timing values. |
-| `FF_PC,U,E,animation/overlay/mameoutput/generic_explosion1` | Plan an explosion on a pixelcade LED |
+| `FF_PC,U,E,animation/overlay/mameoutput/generic_explosion1` | Plays an explosion on a Pixelcade LED. |
+| `FF_PUP,U,E,animation/overlay/mameoutput/generic_explosion1` | Triggers PinUP Player content. |
 | `FF_DMD,U,display/picture?path=ingame/explosion1` | Displays the named picture content on the DMD/display target. |
 
 ## Choosing Commands Or Score Triggers

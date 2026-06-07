@@ -34,7 +34,7 @@ ST=30000:FF_DOF E773,1800
 SE=80000:80000:10:FF_DOF E781,1800
 
 # Credits changed by -2 to 1
-DC=-2:1:FF_PC,U,M,ministats?label=!PREFIX_C!&value=!CREDITS!
+DC=-2:1:FF_PUP,U,M,ministats?label=!PREFIX_C!&value=!CREDITS!
 ```
 
 ## Trigger Summary
@@ -72,7 +72,7 @@ SD=delay_ms:actions
 Example:
 
 ```ini
-SD=5000:FF_PC,U,E,arcade/stream/mame/!ROM!?nogif&nomini&nostrip&event=InGame
+SD=5000:FF_PUP,U,E,arcade/stream/mame/!ROM!?nogif&nomini&nostrip&event=InGame
 ```
 
 ## Action Substitutions
@@ -99,5 +99,5 @@ Actions can use live substitutions:
 Example:
 
 ```ini
-SD=100:FF_PC,U,M,ministats?label=!PREFIX_R!&value=!ROUND!&shots=!SHOTS!&hits=!HITS!&ratio=!RATIO!
+SD=100:FF_PUP,U,M,ministats?label=!PREFIX_R!&value=!ROUND!&shots=!SHOTS!&hits=!HITS!&ratio=!RATIO!
 ```

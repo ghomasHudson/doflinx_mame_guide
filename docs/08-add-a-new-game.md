@@ -41,10 +41,14 @@ A minimal game file usually starts with these sections:
 
 [COMMANDS]
 
+[CLEAR COMMANDS]
+
 [SCORE]
 ```
 
 `[STARTUP]` sets up game-specific lighting, button mappings, and long-running effects. `[SHUTDOWN]` should undo anything that should not carry into the next game.
+
+Use `[CLEAR COMMANDS]` only when this game needs to remove command mappings loaded earlier, such as generic mappings from `All_Pre.MAME` that are wrong for this ROM.
 
 ```ini
 [STARTUP]
@@ -69,6 +73,14 @@ fire|OFF|FF_DOF E212,0
 ```
 
 Use `KEY_TO_COMMAND` in `[STARTUP]` when you want a cabinet button to trigger a named command such as `fire`.
+
+If a shared file defines a command that should not apply to this game, remove it in `[CLEAR COMMANDS]` before adding any replacement behavior:
+
+```ini
+[CLEAR COMMANDS]
+led0
+led1
+```
 
 ## 4. Find Memory Values
 
@@ -209,3 +221,5 @@ Before sharing or committing the file:
 3. Move shared behavior into `All_Pre.MAME` or `All_Post.MAME` if it applies to multiple games.
 4. Use `USES=` for clone ROMs that should share the same configuration.
 5. Confirm `[SHUTDOWN]` resets any game-specific button mappings or lighting changes.
+
+Please submit new or improved `.MAME` files to the DOFLinx GitHub repository so the community has one shared set of MAME files: [DOFLinx MAMEV3](https://github.com/DOFLinx/DOFLinx/tree/main/MAMEV3).
