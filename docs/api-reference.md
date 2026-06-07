@@ -8,6 +8,8 @@ layout: default
 
 This is a lookup reference for DOFLinx `.MAME` files. Use it alongside the task-based documentation when you know which section, key, trigger, parser, or action you need.
 
+DOFLinx also provides the authoritative [parameter documentation](https://doflinx.github.io/docs/parameters/11_The_Parameters.html) for top-level `DOFLinx.INI` parameters. This page is a `.MAME` file reference and uses `.MAME` action shorthand where noted.
+
 ## File-Level Directives
 
 | Directive | Format | Purpose |
@@ -77,14 +79,14 @@ ACTION_NAME parameter1,parameter2,parameter3
 
 | Action | Common Format | Purpose |
 |---|---|---|
-| `FF_DOF` | `FF_DOF E223,-1` | Fires a DOF event. The second value is usually duration in milliseconds; `-1` means default pulse behavior and `0` commonly turns an event off. |
+| `FF_DOF` | `FF_DOF E223,-1` | Fires a DOF event. This is `.MAME` action shorthand for the documented `FF_DOF=<event>,<duration>` parameter format. The second value follows the published `FF_DOF` duration rules: `-1` uses the DOF-configured duration, a positive value is milliseconds, and `0` turns off a previously enabled effect. |
 | `FF_Button` | `FF_Button BUT_P1,BA_ON,0,0` | Changes a cabinet button light state. |
 | `FF_Colour` | `FF_Colour Blue,RGB_TT,1500` | Sets a named RGB device/toy to a colour. |
 | `FF_Flasher` | `FF_Flasher DV_FLCN,FL_TT,1,300,100,Random` | Runs a flasher effect on a configured device. |
 | `FF_Dev` | `FF_Dev DV_KN,-1` | Sends a command to a configured output device. |
-| `FF_PC` | `FF_PC,U,E,animation/overlay/mameoutput/generic_explosion1` | Triggers Pixelcade content. |
-| `FF_PUP` | `FF_PUP,U,E,animation/overlay/mameoutput/generic_explosion1` | Triggers PinUP Player content. |
-| `FF_DMD` | `FF_DMD,U,display/picture?path=ingame/explosion1` | Shows media on a DMD/display target. |
+| `FF_PC` | `FF_PC,U,E,animation/overlay/mameoutput/generic_explosion1` | `.MAME` action shorthand for Pixelcade content. The published top-level parameter form is `FF_PC A,O,DDDDD`, where `A` is action, `O` is output device, and `DDDDD` is detail. |
+| `FF_PUP` | `FF_PUP,U,E,animation/overlay/mameoutput/generic_explosion1` | `.MAME` action shorthand used by these MAME reference examples for PinUP Player content. Do not confuse it with the published top-level `FF_PUP_EVENT=EEE,VV` parameter. |
+| `FF_DMD` | `FF_DMD,U,display/picture?path=ingame/explosion1` | `.MAME` action shorthand for DMD/display content. The published top-level parameter form is `FF_DMD=A,DDDDD`. |
 | `FF_MSG` | `FF_MSG <message>` | Sends a text message through DOFLinx. |
 | `FF_SSF` | `FF_SSF <sound>` | Plays an SSF sound effect. |
 | `FF_RUN` | `FF_RUN <command>` | Runs an external command or program. |
@@ -146,7 +148,7 @@ CKM=EQ,01
 
 ## Parser Rules
 
-Parser rules normalize raw memory bytes into values that triggers can compare. The full command formats are documented in the DOFLinx parameter reference: [FF_PC](https://doflinx.github.io/docs/parameters/11_The_Parameters.html#ff_pc-aoddddd) and [FF_PUP](https://doflinx.github.io/docs/parameters/11_The_Parameters.html#ff_pup-aoddddd).
+Parser rules normalize raw memory bytes into values that triggers can compare. They are part of `.MAME` score/value processing and are separate from the top-level parameters documented in the DOFLinx parameter reference.
 
 ```ini
 PARSER_KEY=start_byte,end_byte,filler,multiplier,type,direction,label,operator,max_change

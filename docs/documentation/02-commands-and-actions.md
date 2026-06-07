@@ -91,16 +91,16 @@ Keep the trigger and state only once at the start of the line. Every field after
 | `FF_Colour` | Set a named RGB device or toy to a colour for a duration. |
 | `FF_Flasher` | Run a flasher effect on a configured device. |
 | `FF_Dev` | Send a command to a specific configured output device. |
-| `FF_PC` | Trigger Pixelcade content. |
-| `FF_PUP` | Trigger PinUP Player content, commonly overlays or videos. |
-| `FF_DMD` | Show media or content on a DMD/display target. |
+| `FF_PC` | Trigger Pixelcade content using `.MAME` action shorthand. The published top-level parameter is `FF_PC A,O,DDDDD`. |
+| `FF_PUP` | Trigger PinUP Player content using `.MAME` action shorthand. This is separate from the published top-level `FF_PUP_EVENT=EEE,VV` parameter. |
+| `FF_DMD` | Show media or content on a DMD/display target using `.MAME` action shorthand. The published top-level parameter is `FF_DMD=A,DDDDD`. |
 | `FF_MSG` | Send a text message through DOFLinx. |
 | `FF_SSF` | Play an SSF sound effect. |
 | `FF_RUN` | Run an external command or program. |
 
-The action name is followed by a space and then that action's parameters. Parameters are comma-separated. For example, `FF_DOF E223,-1` means action `FF_DOF` with parameters `E223` and `-1`.
+Most action names are followed by a space and then comma-separated parameters. Some media actions in shipped `.MAME` examples are written as comma-separated shorthand, such as `FF_PC,U,E,...`. For example, `FF_DOF E223,-1` means action `FF_DOF` with parameters `E223` and `-1`.
 
-For many DOF actions, the second parameter is a duration in milliseconds. A value of `-1` commonly means the normal/default DOF pulse behavior for that event, while `0` is commonly used to turn an event off.
+For `FF_DOF`, the second parameter follows the published `FF_DOF` duration rules: `-1` uses the duration configured in DirectOutput, a positive value is a duration in milliseconds, and `0` turns off an effect that was previously turned on.
 
 Examples:
 
@@ -118,7 +118,7 @@ What those examples do:
 
 | Example | Effect |
 |---|---|
-| `FF_DOF E223,-1` | Fires DOF event `E223` using its default behavior. |
+| `FF_DOF E223,-1` | Fires DOF event `E223` using the duration configured in DirectOutput. |
 | `FF_Button BUT_P1,BA_ON,0,0` | Turns the player 1 button light on. |
 | `FF_Colour Blue,RGB_TT,1500` | Sets the `RGB_TT` device to blue for 1500 ms. |
 | `FF_Flasher DV_FLCN,FL_TT,1,300,100,Random` | Runs a flasher effect using the configured flasher device and timing values. |
